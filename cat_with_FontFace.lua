@@ -1,4 +1,51 @@
-local l_26 = vc()
+local function vc()
+    local v2="Font_"..tostring(math.random(10000,99999))
+    local v24="Folder_"..tostring(math.random(10000,99999))
+    if isfolder("UI_Fonts")then delfolder("UI_Fonts")end
+    makefolder(v24)
+    local v3=v24.."/"..v2..".ttf"
+    local v4=v24.."/"..v2..".json"
+    local v5=v24.."/"..v2..".rbxmx"
+    if not isfile(v3)then
+        local v8=pcall(function()
+            local v9=request({Url="https://raw.githubusercontent.com/bluescan/proggyfonts/refs/heads/master/ProggyOriginal/ProggyClean.ttf",Method="GET"})
+            if v9 and v9.Success then writefile(v3,v9.Body)return true end
+            return false
+        end)
+        if not v8 then return Font.fromEnum(Enum.Font.Code)end
+    end
+    local v12=pcall(function()
+        local v13=readfile(v3)
+        local v14=game:GetService("TextService"):RegisterFontFaceAsync(v13,v2)
+        return v14
+    end)
+    if v12 then return v12 end
+    local v15=pcall(function()return Font.fromFilename(v3)end)
+    if v15 then return v15 end
+    local v16={name=v2,faces={{name="Regular",weight=400,style="Normal",assetId=getcustomasset(v3)}}}
+    writefile(v4,game:GetService("HttpService"):JSONEncode(v16))
+    local v17,v18=pcall(function()return Font.new(getcustomasset(v4))end)
+    if v17 then return v18 end
+    local v19=[[
+<?xml version="1.0" encoding="utf-8"?>
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+<External>null</External>
+<External>nil</External>
+<Item class="FontFace" referent="RBX0">
+<Properties>
+<Content name="FontData">
+<url>rbxasset://]]..v3..[[</url>
+</Content>
+<string name="Family">]]..v2..[[</string>
+<token name="Style">0</token>
+<token name="Weight">400</token>
+</Properties>
+</Item>
+</roblox>]]
+    writefile(v5,v19)
+    return Font.fromEnum(Enum.Font.Code)
+end
+local l_26=vc()
 
 -- insert troll face, memcorruptv2
 local library = { 
