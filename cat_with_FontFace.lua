@@ -480,12 +480,12 @@ function library:CreateWindow(name, size, hidebutton)
     window.OpenedColorPickers = { }
     window.Tabs = { }
 
-    function window:CreateTab(name)
+     function window:CreateTab(name)
         local tab = { }
         tab.name = name or ""
 
-        local textservice = game:GetService("TextService")
-        local size = textservice:GetTextSize(tab.name, l_26size, l_26, Vector2.new(200,300))
+        local defaultWidth = 100 
+        local defaultHeight = window.TabList.AbsoluteSize.Y - 1
 
         tab.TabButton = Instance.new("TextButton", window.TabList)
         tab.TabButton.TextColor3 = window.theme.tabstextcolor
@@ -495,14 +495,13 @@ function library:CreateWindow(name, size, hidebutton)
         tab.TabButton.TextYAlignment = Enum.TextYAlignment.Center
         tab.TabButton.BackgroundTransparency = 1
         tab.TabButton.BorderSizePixel = 0
-        tab.TabButton.Size = UDim2.fromOffset(size.X + 15, window.TabList.AbsoluteSize.Y - 1)
+        tab.TabButton.Size = UDim2.fromOffset(defaultWidth, defaultHeight)
         tab.TabButton.Name = tab.name
         tab.TabButton.TextSize = l_26size
         updateevent.Event:Connect(function(theme)
-            local size = textservice:GetTextSize(tab.name, l_26size, l_26, Vector2.new(200,300))
             tab.TabButton.TextColor3 = tab.TabButton.Name == "SelectedTab" and theme.accentcolor or theme.tabstextcolor
             tab.TabButton.FontFace = l_26
-            tab.TabButton.Size = UDim2.fromOffset(size.X + 15, window.TabList.AbsoluteSize.Y - 1)
+            tab.TabButton.Size = UDim2.fromOffset(defaultWidth, defaultHeight)
             tab.TabButton.TextSize = l_26size
         end)
 
@@ -566,7 +565,7 @@ function library:CreateWindow(name, size, hidebutton)
             tab.TabButton.Name = "SelectedTab"
             tab.Right.Visible = true
             tab.Left.Visible = true
-            window.Line:TweenSizeAndPosition(UDim2.fromOffset(size.X + 15, 1), UDim2.new(0, (tab.TabButton.AbsolutePosition.X - window.Frame.AbsolutePosition.X), 0, 0) + (window.BlackLine.Position - UDim2.fromOffset(0, 1)), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.15)
+            window.Line:TweenSizeAndPosition(UDim2.fromOffset(defaultWidth, 1), UDim2.new(0, (tab.TabButton.AbsolutePosition.X - window.Frame.AbsolutePosition.X), 0, 0) + (window.BlackLine.Position - UDim2.fromOffset(0, 1)), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.15)
             wait(0.2)
             block = false
         end
@@ -578,7 +577,7 @@ function library:CreateWindow(name, size, hidebutton)
         tab.TabButton.MouseButton1Down:Connect(function()
             tab:SelectTab()
         end)
-
+	
         tab.SectorsLeft = { }
         tab.SectorsRight = { }
 
