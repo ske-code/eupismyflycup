@@ -222,5 +222,57 @@ Create(Boxes.MiscBox, "Toggle", "CoinToggle", "Coin Farm", function(s)
         workspace.DescendantAdded:Connect(function(o) if _G.Coin and o.Name:lower():find("coin") and o:IsA("Part") then o.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame task.wait(0.1) o:Destroy() end end)
     end
 end)
+Create(Boxes.CombatBox, "Toggle", "SpinBotToggle", "Spin Bot", function(s)
+    _G.SpinBot = s
+    if s then spawn(function()
+        while _G.SpinBot do
+            local lp = game.Players.LocalPlayer
+            if lp.Character then
+                local hrp = lp.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    hrp.CFrame = hrp.CFrame * CFrame.Angles(0, math.rad(30), 0)
+                end
+            end
+            task.wait()
+        end
+    end) end
+end)
+Create(Boxes.CombatBox, "Toggle", "ForceFieldToggle", "Force Field", function(s)
+    _G.ForceField = s
+    if s then
+        local lp = game.Players.LocalPlayer
+        local char = lp.Character
+        if char then
+            local forceField = Instance.new("ForceField")
+            forceField.Parent = char
+            _G.ForceFieldObj = forceField
+        end
+        lp.CharacterAdded:Connect(function(newChar)
+            if _G.ForceField then
+                local forceField = Instance.new("ForceField")
+                forceField.Parent = newChar
+                _G.ForceFieldObj = forceField
+            end
+        end)
+    else
+        if _G.ForceFieldObj then
+            _G.ForceFieldObj:Destroy()
+            _G.ForceFieldObj = nil
+        end
+    end
+end)
 
+Create(Boxes.CombatBox, "Toggle", "ForceFieldColorToggle", "Force Field Color", function(s)
+    _G.ForceFieldColor = s
+end)
+
+Boxes.CombatBox:AddLabel("Force Field Color"):AddColorPicker("ForceFieldColorPicker", {
+    Default = Color3.new(1, 0, 0),
+    Callback = function(Value)
+        if _G.ForceFieldColor and _G.ForceFieldObj then
+            _G.ForceFieldObj.Visible = false
+            _G.ForceFieldObj.Visible = true
+        end
+    end
+})
 Library:Notify("Loaded On vector3.axus successfully!!")
