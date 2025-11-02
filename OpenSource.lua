@@ -230,48 +230,84 @@ Create(Boxes.CombatBox, "Toggle", "SpinBotToggle", "Spin Bot", function(s)
             if lp.Character then
                 local hrp = lp.Character:FindFirstChild("HumanoidRootPart")
                 if hrp then
-                    hrp.CFrame = hrp.CFrame * CFrame.Angles(0, math.rad(30), 0)
+                    hrp.CFrame = hrp.CFrame * CFrame.Angles(0, math.rad(60), 0)
                 end
             end
             task.wait()
         end
     end) end
 end)
-Create(Boxes.CombatBox, "Toggle", "ForceFieldToggle", "Force Field", function(s)
-    _G.ForceField = s
+Create(Boxes.CombatBox, "Toggle", "ForceFieldChar", "Force Field Character", function(s)
+    _G.ForceFieldChar = s
     if s then
-        local lp = game.Players.LocalPlayer
-        local char = lp.Character
+        local char = game.Players.LocalPlayer.Character
         if char then
-            local forceField = Instance.new("ForceField")
-            forceField.Parent = char
-            _G.ForceFieldObj = forceField
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                    part.Material = Enum.Material.ForceField
+                    part.Transparency = _G.ForceFieldTransparency or 0.3
+                    part.Color = _G.ForceFieldColor or Color3.new(0, 0.5, 1)
+                end
+            end
         end
-        lp.CharacterAdded:Connect(function(newChar)
-            if _G.ForceField then
-                local forceField = Instance.new("ForceField")
-                forceField.Parent = newChar
-                _G.ForceFieldObj = forceField
+        game.Players.LocalPlayer.CharacterAdded:Connect(function(newChar)
+            if _G.ForceFieldChar then
+                for _, part in pairs(newChar:GetDescendants()) do
+                    if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                        part.Material = Enum.Material.ForceField
+                        part.Transparency = _G.ForceFieldTransparency or 0.3
+                        part.Color = _G.ForceFieldColor or Color3.new(0, 0.5, 1)
+                    end
+                end
             end
         end)
     else
-        if _G.ForceFieldObj then
-            _G.ForceFieldObj:Destroy()
-            _G.ForceFieldObj = nil
+        local char = game.Players.LocalPlayer.Character
+        if char then
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                    part.Material = Enum.Material.Plastic
+                    part.Transparency = 0
+                end
+            end
         end
     end
 end)
 
-Create(Boxes.CombatBox, "Toggle", "ForceFieldColorToggle", "Force Field Color", function(s)
-    _G.ForceFieldColor = s
-end)
+Boxes.CombatBox:AddSlider("ForceFieldTransparency", {
+    Text = "Force Field Transparency",
+    Default = 30,
+    Min = 0,
+    Max = 100,
+    Rounding = 0,
+    Callback = function(v)
+        _G.ForceFieldTransparency = v / 100
+        if _G.ForceFieldChar then
+            local char = game.Players.LocalPlayer.Character
+            if char then
+                for _, part in pairs(char:GetDescendants()) do
+                    if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                        part.Transparency = _G.ForceFieldTransparency
+                    end
+                end
+            end
+        end
+    end
+})
 
 Boxes.CombatBox:AddLabel("Force Field Color"):AddColorPicker("ForceFieldColorPicker", {
-    Default = Color3.new(1, 0, 0),
+    Default = Color3.new(0, 0.5, 1),
     Callback = function(Value)
-        if _G.ForceFieldColor and _G.ForceFieldObj then
-            _G.ForceFieldObj.Visible = false
-            _G.ForceFieldObj.Visible = true
+        _G.ForceFieldColor = Value
+        if _G.ForceFieldChar then
+            local char = game.Players.LocalPlayer.Character
+            if char then
+                for _, part in pairs(char:GetDescendants()) do
+                    if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                        part.Color = _G.ForceFieldColor
+                    end
+                end
+            end
         end
     end
 })
