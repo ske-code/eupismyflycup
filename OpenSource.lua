@@ -8,7 +8,7 @@ local Boxes = {
     MainBox = Tabs.Main:AddLeftGroupbox('Main'), AutoBox = Tabs.Main:AddRightGroupbox('Auto'),
     HitBox = Tabs.Combat:AddLeftGroupbox('Hitbox'), CombatBox = Tabs.Combat:AddRightGroupbox('Combat'),
     RageBox = Tabs.Rage:AddLeftGroupbox('Rage'), SetBox = Tabs.Rage:AddRightGroupbox('Settings'),
-    MiscBox = Tabs.Misc:AddLeftGroupbox('Misc')
+    MiscBox = Tabs.Misc:AddLeftGroupbox('Misc'), VisualBox = Tabs.Misc:AddRightGroupbox('Visual')
 }
 
 local function getClosest(teamCheck)
