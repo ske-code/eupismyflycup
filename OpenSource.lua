@@ -311,4 +311,127 @@ Boxes.CombatBox:AddLabel("Force Field Color"):AddColorPicker("ForceFieldColorPic
         end
     end
 })
+Create(Boxes.VisualBox, "Toggle", "ESP", "ESP", function(s)
+    _G.ESP = s
+    if s then
+        _G.ESPBoxes = {}
+        local function createESP(player)
+            if player == game.Players.LocalPlayer then return end
+            local char = player.Character
+            if not char then return end
+            
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "ESP_" .. player.Name
+            highlight.Adornee = char
+            highlight.Parent = char
+            highlight.FillColor = _G.ESPColor or (player.Team == game.Players.LocalPlayer.Team and Color3.new(0, 1, 0) or Color3.new(1, 0, 0))
+            highlight.FillTransparency = 0.7
+            highlight.OutlineColor = Color3.new(1, 1, 1)
+            highlight.OutlineTransparency = 0
+            
+            local billboard = Instance.new("BillboardGui")
+            billboard.Name = "ESPInfo_" .. player.Name
+            billboard.Adornee = char:WaitForChild("Head")
+            billboard.Size = UDim2.new(0, 300, 0, 30)
+            billboard.StudsOffset = Vector3.new(0, 3, 0)
+            billboard.AlwaysOnTop = true
+            billboard.Parent = char
+            
+            local nametag = Instance.new("TextLabel")
+            nametag.Name = "NameTag"
+            nametag.Size = UDim2.new(1, 0, 1, 0)
+            nametag.BackgroundTransparency = 1
+            nametag.TextColor3 = _G.ESPTextColor or Color3.new(1, 1, 1)
+            nametag.TextStrokeTransparency = 0
+            nametag.Font = Enum.Font.Code
+            nametag.TextSize = _G.ESPTextSize or 14
+            nametag.Parent = billboard
+            
+            _G.ESPBoxes[player] = {highlight = highlight, billboard = billboard, nametag = nametag}
+            
+            spawn(function()
+                while _G.ESP and char and char.Parent do
+                    local distance = (game.Players.LocalPlayer.Character.Head.Position - char.Head.Position).Magnitude
+                    local tool = char:FindFirstChildOfClass("Tool")
+                    local health = char:FindFirstChild("Humanoid") and math.floor(char.Humanoid.Health) or 0
+                    
+                    nametag.Text = player.DisplayName .. " (@" .. player.Name .. ") | Distance: " .. math.floor(distance) .. " | Tool: " .. (tool and tool.Name or "None") .. " | Health: " .. health
+                    
+                    task.wait(0.1)
+                end
+            end)
+        end
+        
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player.Character then
+                createESP(player)
+            end
+            player.CharacterAdded:Connect(function(char)
+                if _G.ESP then
+                    createESP(player)
+                end
+            end)
+        end
+        
+        game.Players.PlayerAdded:Connect(function(player)
+            if _G.ESP then
+                player.CharacterAdded:Connect(function(char)
+                    createESP(player)
+                end)
+            end
+        end)
+    else
+        for player, espData in pairs(_G.ESPBoxes or {}) do
+            if espData.highlight then espData.highlight:Destroy() end
+            if espData.billboard then espData.billboard:Destroy() end
+        end
+        _G.ESPBoxes = {}
+    end
+end)
+
+Boxes.VisualBox:AddLabel("ESP Color"):AddColorPicker("ESPColorPicker", {
+    Default = Color3.new(1, 0, 0),
+    Callback = function(Value)
+        _G.ESPColor = Value
+        if _G.ESP and _G.ESPBoxes then
+            for player, espData in pairs(_G.ESPBoxes) do
+                if espData.highlight then
+                    espData.highlight.FillColor = _G.ESPColor
+                end
+            end
+        end
+    end
+})
+
+Boxes.VisualBox:AddLabel("Text Color"):AddColorPicker("ESPTextColorPicker", {
+    Default = Color3.new(1, 1, 1),
+    Callback = function(Value)
+        _G.ESPTextColor = Value
+        if _G.ESP and _G.ESPBoxes then
+            for player, espData in pairs(_G.ESPBoxes) do
+                if espData.nametag then
+                    espData.nametag.TextColor3 = _G.ESPTextColor
+                end
+            end
+        end
+    end
+})
+
+Boxes.VisualBox:AddSlider("ESPTextSize", {
+    Text = "Text Size",
+    Default = 14,
+    Min = 8,
+    Max = 20,
+    Rounding = 0,
+    Callback = function(v)
+        _G.ESPTextSize = v
+        if _G.ESP and _G.ESPBoxes then
+            for player, espData in pairs(_G.ESPBoxes) do
+                if espData.nametag then
+                    espData.nametag.TextSize = _G.ESPTextSize
+                end
+            end
+        end
+    end
+})
 Library:Notify("Loaded On vector3.axus successfully!!")
