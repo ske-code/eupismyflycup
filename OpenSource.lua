@@ -434,4 +434,27 @@ Boxes.VisualBox:AddSlider("ESPTextSize", {
         end
     end
 })
+Create(Boxes.RageBox, "Toggle", "AutoSwing", "Auto Swing Hatchet", function(s)
+    _G.AutoSwing = s
+    if s then spawn(function()
+        while _G.AutoSwing do
+            local hatchet = game:GetService("Players").LocalPlayer:WaitForChild("Backpack"):FindFirstChild("Hatchet")
+            if not hatchet then
+                hatchet = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Hatchet")
+            end
+            
+            if hatchet and hatchet:FindFirstChild("SwingEvent") then
+                local closest = getClosest(true)
+                if closest and closest.Character then
+                    local targetPos = closest.Character:FindFirstChild("HumanoidRootPart").Position
+                    local args = {
+                        CFrame.new(targetPos.X, targetPos.Y, targetPos.Z, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+                    }
+                    hatchet.SwingEvent:FireServer(unpack(args))
+                end
+            end
+            task.wait(0.1)
+        end
+    end) end
+end)
 Library:Notify("Loaded On vector3.axus successfully!!")
