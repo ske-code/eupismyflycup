@@ -201,9 +201,7 @@ local themes = { Default = {
     ["Window Border"] = Color3.fromRGB(58,58,67),
     ["Text"] = Color3.fromRGB(245,245,245),
     ["Risky Text"] = Color3.fromRGB(245,239,120),
-    ["Object Background"] = Color3.fromRGB(41,41,50)，
-    ["Page Unselected"] = Color3.fromRGB(35,35,42),
-    ["Page Selected"] = Color3.fromRGB(45,45,55)
+    ["Object Background"] = Color3.fromRGB(41,41,50)
 }}
 
 -- =========================
@@ -289,7 +287,7 @@ function Library:CreateWindow(title)
     win.pageContent = drawing.new("Square")
     win.pageContent.Size = UDim2.new(0, 460, 0, 360)
     win.pageContent.Position = UDim2.new(0, 170, 0, 60)
-    win.pageContent.Color = self.theme["Page Unselected"] or self.theme["Window Inline Background"]
+    win.pageContent.Color = self.theme["Window Inline Background"]
     win.pageContent.Filled = true
 
     function win:CreatePage(name)
@@ -299,7 +297,7 @@ function Library:CreateWindow(title)
         local btn = drawing.new("Square")
         btn.Size = UDim2.new(0, 120, 0, 30)
         btn.Position = UDim2.new(0, 10, 0, 10 + (#self.pages * 36))
-        btn.Color = self.theme["Page Unselected"]
+        btn.Color = self.theme["Window Inline Background"]
         btn.Filled = true
 
         local btnt = drawing.new("Text")
