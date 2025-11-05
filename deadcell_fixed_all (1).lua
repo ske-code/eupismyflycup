@@ -201,7 +201,9 @@ local themes = { Default = {
     ["Window Border"] = Color3.fromRGB(58,58,67),
     ["Text"] = Color3.fromRGB(245,245,245),
     ["Risky Text"] = Color3.fromRGB(245,239,120),
-    ["Object Background"] = Color3.fromRGB(41,41,50)
+    ["Object Background"] = Color3.fromRGB(41,41,50)，
+    ["Page Unselected"] = Color3.fromRGB(35,35,42),
+    ["Page Selected"] = Color3.fromRGB(45,45,55)
 }}
 
 -- =========================
