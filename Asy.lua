@@ -223,7 +223,7 @@ function AsyV2:CreateWindow(opt)
                 end
                 
                 checkbox.MouseButton1Click:Connect(toggleFunc)
-                if UIS.TouchEnabled then checkbox.TouchTap:Connect(toggleFunc) end
+                --if UIS.TouchEnabled then checkbox.TouchTap:Connect(toggleFunc) end
                 return setmetatable(tog, {__index = self})
             end
             
@@ -255,7 +255,6 @@ function AsyV2:CreateWindow(opt)
                 })
                 local function buttonClick() btn.cb() end
                 btnText.MouseButton1Click:Connect(buttonClick)
-                if UIS.TouchEnabled then btnText.TouchTap:Connect(buttonClick) end
                 btnText.MouseEnter:Connect(function() tw(btnBg, {BackgroundColor3 = clr.accent}, 0.2) end)
                 btnText.MouseLeave:Connect(function() tw(btnBg, {BackgroundColor3 = clr.bg}, 0.2) end)
                 return setmetatable(btn, {__index = self})
@@ -407,9 +406,6 @@ function AsyV2:CreateWindow(opt)
                     end
                     
                     optionBtn.MouseButton1Click:Connect(selectOption)
-                    if UIS.TouchEnabled then
-                        optionBtn.TouchTap:Connect(selectOption)
-                    end
                 end
                 
                 return setmetatable(lst, {__index = self})
@@ -611,15 +607,7 @@ function AsyV2:CreateWindow(opt)
                         handleHueInput(input, false)
                     end)
                     
-                    if UIS.TouchEnabled then
-                        colorArea.TouchTap:Connect(function(input)
-                            handleColorInput(input, true)
-                        end)
-                        
-                        hueSlider.TouchTap:Connect(function(input)
-                            handleHueInput(input, true)
-                        end)
-                    end
+                    
                     
                     UIS.InputChanged:Connect(function(input)
                         if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
@@ -639,12 +627,7 @@ function AsyV2:CreateWindow(opt)
                         colorPickerOpen = false
                     end)
                     
-                    if UIS.TouchEnabled then
-                        closeBtn.TouchTap:Connect(function()
-                            colorPickerFrame:Destroy()
-                            colorPickerOpen = false
-                        end)
-                    end
+                    
                     
                     updateGradient()
                     updateColor()
@@ -653,9 +636,7 @@ function AsyV2:CreateWindow(opt)
                 end
                 
                 colorBtn.MouseButton1Click:Connect(createColorPicker)
-                if UIS.TouchEnabled then
-                    colorBtn.TouchTap:Connect(createColorPicker)
-                end
+                
                 
                 return setmetatable(clrp, {__index = self})
             end
