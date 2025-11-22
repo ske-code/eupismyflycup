@@ -100,7 +100,21 @@ local themes = {
         g = {BackgroundColor3 = {}, Color = {}},
     }
 }
+function VasaJas:apply_theme(instance, theme, property)
+    insert(themes.utility[theme][property], instance)
+end
 
+function VasaJas:update_theme(theme, color)
+    for _, property in themes.utility[theme] do
+        for m, object in property do
+            if object[_] == themes.preset[theme] then
+                object[_] = color
+            end
+        end
+    end
+
+    themes.preset[theme] = color
+end
 local keys = {
     [Enum.KeyCode.LeftShift] = "LS",
     [Enum.KeyCode.RightShift] = "RS",
@@ -408,22 +422,6 @@ end
 function VasaJas:round(number, float)
     local multiplier = 1 / (float or 1)
     return floor(number * multiplier + 0.5) / multiplier
-end
-
-function VasaJas:apply_theme(instance, theme, property)
-    insert(themes.utility[theme][property], instance)
-end
-
-function VasaJas:update_theme(theme, color)
-    for _, property in themes.utility[theme] do
-        for m, object in property do
-            if object[_] == themes.preset[theme] then
-                object[_] = color
-            end
-        end
-    end
-
-    themes.preset[theme] = color
 end
 
 function VasaJas:connection(signal, callback)
