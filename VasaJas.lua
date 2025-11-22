@@ -101,18 +101,20 @@ local themes = {
     }
 }
 function VasaJas:apply_theme(instance, theme, property)
-    insert(themes.utility[theme][property], instance)
+    table.insert(themes.utility[theme][property], instance)
 end
-
 function VasaJas:update_theme(theme, color)
-    for _, property in themes.utility[theme] do
-        for m, object in property do
-            if object[_] == themes.preset[theme] then
-                object[_] = color
+    -- Iterate over each property (e.g., BackgroundColor3, Color, etc.)
+    for propertyName, instances in pairs(themes.utility[theme]) do
+        -- Iterate over all stored instances for that property
+        for _, instance in pairs(instances) do
+            if instance[propertyName] == themes.preset[theme] then
+                instance[propertyName] = color
             end
         end
     end
 
+    -- Update the preset
     themes.preset[theme] = color
 end
 local keys = {
