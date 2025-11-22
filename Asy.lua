@@ -500,7 +500,7 @@ function AsyV2:CreateWindow(opt)
                         }
                     })
                     local colorPickerDot = cr("Frame", {
-                        Parent = colorArea, Size = UDim2.new(0, 4, 0, 4), 
+                        Parent = colorArea, Size = UDim2.new(0, 4, 0, 4), Position = UDim2.new(0.5, -2, 0.5, -2),
                         BackgroundColor3 = Color3.new(0,0,0), BorderSizePixel = 1, BorderColor3 = Color3.new(1,1,1)
                     })
                     
@@ -522,7 +522,7 @@ function AsyV2:CreateWindow(opt)
                         Rotation = 90
                     })
                     local huePickerDot = cr("Frame", {
-                        Parent = hueSlider, Size = UDim2.new(1, 0, 0, 2),
+                        Parent = hueSlider, Size = UDim2.new(1, 0, 0, 2), Position = UDim2.new(0, 0, 0.5, -1),
                         BackgroundColor3 = Color3.new(0,0,0), BorderSizePixel = 1, BorderColor3 = Color3.new(1,1,1)
                     })
                     
@@ -580,45 +580,46 @@ function AsyV2:CreateWindow(opt)
                         updateColor()
                     end
                     
-                    local function handleColorInput(input, isTouch)
-                        if input.UserInputType == Enum.UserInputType.MouseButton1 or (isTouch and input.UserInputType == Enum.UserInputType.Touch) then
+                    local hueDrag = false
+                    local colorDrag = false
+                    
+                    hueSlider.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                            hueDrag = true
+                            local y = (input.Position.Y - hueSlider.AbsolutePosition.Y) / hueSlider.AbsoluteSize.Y
+                            setHue(y)
+                        end
+                    end)
+                    
+                    hueSlider.InputEnded:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                            hueDrag = false
+                        end
+                    end)
+                    
+                    colorArea.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                            colorDrag = true
                             local x = (input.Position.X - colorArea.AbsolutePosition.X) / colorArea.AbsoluteSize.X
                             local y = (input.Position.Y - colorArea.AbsolutePosition.Y) / colorArea.AbsoluteSize.Y
                             setColorFromArea(x, y)
-                            return true
                         end
-                        return false
-                    end
-                    
-                    local function handleHueInput(input, isTouch)
-                        if input.UserInputType == Enum.UserInputType.MouseButton1 or (isTouch and input.UserInputType == Enum.UserInputType.Touch) then
-                            local y = (input.Position.Y - hueSlider.AbsolutePosition.Y) / hueSlider.AbsoluteSize.Y
-                            setHue(y)
-                            return true
-                        end
-                        return false
-                    end
-                    
-                    colorArea.InputBegan:Connect(function(input)
-                        handleColorInput(input, false)
                     end)
                     
-                    hueSlider.InputBegan:Connect(function(input)
-                        handleHueInput(input, false)
+                    colorArea.InputEnded:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                            colorDrag = false
+                        end
                     end)
-                    
-                    
                     
                     UIS.InputChanged:Connect(function(input)
-                        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                            if colorArea:IsMouseOver() then
-                                local x = (input.Position.X - colorArea.AbsolutePosition.X) / colorArea.AbsoluteSize.X
-                                local y = (input.Position.Y - colorArea.AbsolutePosition.Y) / colorArea.AbsoluteSize.Y
-                                setColorFromArea(x, y)
-                            elseif hueSlider:IsMouseOver() then
-                                local y = (input.Position.Y - hueSlider.AbsolutePosition.Y) / hueSlider.AbsoluteSize.Y
-                                setHue(y)
-                            end
+                        if hueDrag and input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                            local y = (input.Position.Y - hueSlider.AbsolutePosition.Y) / hueSlider.AbsoluteSize.Y
+                            setHue(y)
+                        elseif colorDrag and input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                            local x = (input.Position.X - colorArea.AbsolutePosition.X) / colorArea.AbsoluteSize.X
+                            local y = (input.Position.Y - colorArea.AbsolutePosition.Y) / colorArea.AbsoluteSize.Y
+                            setColorFromArea(x, y)
                         end
                     end)
                     
@@ -627,16 +628,11 @@ function AsyV2:CreateWindow(opt)
                         colorPickerOpen = false
                     end)
                     
-                    
-                    
                     updateGradient()
                     updateColor()
-                    setHue(0.5)
-                    setColorFromArea(0.5, 0.5)
                 end
                 
                 colorBtn.MouseButton1Click:Connect(createColorPicker)
-                
                 
                 return setmetatable(clrp, {__index = self})
             end
