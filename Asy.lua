@@ -613,13 +613,26 @@ function AsyV2:CreateWindow(opt)
                     end)
                     
                     UIS.InputChanged:Connect(function(input)
-                        if hueDrag and input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                            local y = (input.Position.Y - hueSlider.AbsolutePosition.Y) / hueSlider.AbsoluteSize.Y
-                            setHue(y)
-                        elseif colorDrag and input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                            local x = (input.Position.X - colorArea.AbsolutePosition.X) / colorArea.AbsoluteSize.X
-                            local y = (input.Position.Y - colorArea.AbsolutePosition.Y) / colorArea.AbsoluteSize.Y
-                            setColorFromArea(x, y)
+                        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                            
+                            if hueDrag then
+                                if input.Position.Y >= hueSlider.AbsolutePosition.Y 
+                                and input.Position.Y <= hueSlider.AbsolutePosition.Y + hueSlider.AbsoluteSize.Y then
+                                    local y = (input.Position.Y - hueSlider.AbsolutePosition.Y) / hueSlider.AbsoluteSize.Y
+                                    setHue(math.clamp(y,0,1))
+                                end
+                            end
+                            
+                            if colorDrag then
+                                if input.Position.X >= colorArea.AbsolutePosition.X 
+                                and input.Position.X <= colorArea.AbsolutePosition.X + colorArea.AbsoluteSize.X 
+                                and input.Position.Y >= colorArea.AbsolutePosition.Y 
+                                and input.Position.Y <= colorArea.AbsolutePosition.Y + colorArea.AbsoluteSize.Y then
+                                    local x = (input.Position.X - colorArea.AbsolutePosition.X) / colorArea.AbsoluteSize.X
+                                    local y = (input.Position.Y - colorArea.AbsolutePosition.Y) / colorArea.AbsoluteSize.Y
+                                    setColorFromArea(math.clamp(x,0,1), math.clamp(y,0,1))
+                                end
+                            end
                         end
                     end)
                     
