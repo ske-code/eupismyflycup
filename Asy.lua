@@ -63,27 +63,60 @@ function AsyV2:CreateWindow(opt)
     }
     
     local sg = cr("ScreenGui", {Name = "AsyV2", Parent = CG})
-    local mf = cr("Frame", {
-        Parent = sg, Size = win.size, Position = UDim2.new(0.5, -win.size.X.Offset/2, 0.5, -win.size.Y.Offset/2),
-        BackgroundColor3 = clr.outline, BorderSizePixel = 0
+    
+    local outerFrame = cr("Frame", {
+        Parent = sg, 
+        Size = UDim2.new(win.size.X.Scale, win.size.X.Offset + 6, win.size.Y.Scale, win.size.Y.Offset + 6),
+        Position = UDim2.new(0.5, -(win.size.X.Offset + 6)/2, 0.5, -(win.size.Y.Offset + 6)/2),
+        BackgroundColor3 = Color3.new(0, 0, 0),
+        BorderSizePixel = 0
     })
+    
+    local mf = cr("Frame", {
+        Parent = outerFrame, 
+        Size = UDim2.new(1, -2, 1, -2), 
+        Position = UDim2.new(0, 1, 0, 1),
+        BackgroundColor3 = clr.outline, 
+        BorderSizePixel = 0
+    })
+    
+    local topLine = cr("Frame", {
+        Parent = outerFrame,
+        Size = UDim2.new(1, 0, 0, 2),
+        Position = UDim2.new(0, 0, 0, 0),
+        BackgroundColor3 = Color3.fromRGB(255,182,193),
+        BorderSizePixel = 0
+    })
+    
     local inf = cr("Frame", {
-        Parent = mf, Size = UDim2.new(1, -2, 1, -2), Position = UDim2.new(0, 1, 0, 1),
-        BackgroundColor3 = clr.inline, BorderSizePixel = 0
+        Parent = mf, 
+        Size = UDim2.new(1, -2, 1, -2), 
+        Position = UDim2.new(0, 1, 0, 1),
+        BackgroundColor3 = clr.inline, 
+        BorderSizePixel = 0
     })
     local bgf = cr("Frame", {
-        Parent = inf, Size = UDim2.new(1, -2, 1, -2), Position = UDim2.new(0, 1, 0, 1),
-        BackgroundColor3 = clr.bg, BorderSizePixel = 0
+        Parent = inf, 
+        Size = UDim2.new(1, -2, 1, -2), 
+        Position = UDim2.new(0, 1, 0, 1),
+        BackgroundColor3 = clr.bg, 
+        BorderSizePixel = 0
     })
     local tbc = cr("Frame", {
-        Parent = bgf, Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 10),
+        Parent = bgf, 
+        Size = UDim2.new(1, -20, 0, 30), 
+        Position = UDim2.new(0, 10, 0, 10),
         BackgroundTransparency = 1
     })
     local tbl = cr("UIListLayout", {
-        Parent = tbc, FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 10)
+        Parent = tbc, 
+        FillDirection = Enum.FillDirection.Horizontal, 
+        Padding = UDim.new(0, 10)
     })
     local pgc = cr("Frame", {
-        Parent = bgf, Size = UDim2.new(1, -20, 1, -50), Position = UDim2.new(0, 10, 0, 50),
+        Parent = bgf, 
+        Size = UDim2.new(1, -20, 1, -50), 
+        Position = UDim2.new(0, 10, 0, 50),
         BackgroundTransparency = 1
     })
     
@@ -93,7 +126,7 @@ function AsyV2:CreateWindow(opt)
     
     local function handleInput(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            drag = true; dragSt = input.Position; stPos = mf.Position
+            drag = true; dragSt = input.Position; stPos = outerFrame.Position
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then drag = false end
             end)
@@ -109,7 +142,7 @@ function AsyV2:CreateWindow(opt)
     UIS.InputChanged:Connect(function(input)
         if input == dragIn and drag then
             local delta = input.Position - dragSt
-            mf.Position = UDim2.new(stPos.X.Scale, stPos.X.Offset + delta.X, stPos.Y.Scale, stPos.Y.Offset + delta.Y)
+            outerFrame.Position = UDim2.new(stPos.X.Scale, stPos.X.Offset + delta.X, stPos.Y.Scale, stPos.Y.Offset + delta.Y)
         end
     end)
     
