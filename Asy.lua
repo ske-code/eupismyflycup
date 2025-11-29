@@ -66,7 +66,7 @@ function AsyV2:CreateWindow(opt)
     
     local outerFrame = cr("Frame", {
         Parent = sg, 
-        Size = UDim2.new(win.size.X.Scale, win.size.X.Offset + 75, win.size.Y.Scale, win.size.Y.Offset + 75),
+        Size = UDim2.new(win.size.X.Scale, win.size.X.Offset + 35, win.size.Y.Scale, win.size.Y.Offset + 35),
         Position = UDim2.new(0.5, -(win.size.X.Offset + 6)/2, 0.5, -(win.size.Y.Offset + 6)/2),
         BackgroundColor3 = Color3.new(0, 0, 0),
         BorderSizePixel = 0
@@ -74,7 +74,7 @@ function AsyV2:CreateWindow(opt)
     
     local mf = cr("Frame", {
         Parent = outerFrame, 
-        Size = UDim2.new(1, -2, 1, -2), 
+        Size = UDim2.new(0.85, -2, 0.75, -2), 
         Position = UDim2.new(0, 1, 0, 1),
         BackgroundColor3 = clr.outline, 
         BorderSizePixel = 0
