@@ -150,15 +150,29 @@ function AsyV2:CreateWindow(opt)
         local tab = {name = n, win = self}
         
         local tbtn = cr("TextButton", {
-            Parent = self.tbc, Size = UDim2.new(0, 0, 1, 0), BackgroundTransparency = 1, Text = n,
+            Parent = self.tbc, Size = UDim2.new(1 / (#self.tabs + 1), 0, 1, 0), BackgroundTransparency = 0, Text = n,
+            BackgroundColor3 = Color3.fromRGB(55,55,65),
             TextColor3 = clr.tab_inactive, TextSize = 12, FontFace = AsyV2.font, AutoButtonColor = false
         })
-        tbtn.Size = UDim2.new(0, tbtn.TextBounds.X + 20, 1, 0)
         
-        local underline = cr("Frame", {
-            Parent = tbtn, Size = UDim2.new(1, 0, 0, 2), Position = UDim2.new(0, 0, 1, -2),
-            BackgroundColor3 = clr.tab_inactive, BorderSizePixel = 0
+        local grad = cr("UIGradient", {
+            Parent = tbtn,
+            Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(65,65,75)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(55,55,65))
+            },
+            Rotation = 90
         })
+        
+        local selectGrad = cr("UIGradient", {
+            Parent = tbtn,
+            Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(110,110,120)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(85,85,95))
+            },
+            Rotation = 90
+        })
+        selectGrad.Enabled = false
         
         local tpg = cr("Frame", {
             Parent = self.pgc, Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false
@@ -181,11 +195,38 @@ function AsyV2:CreateWindow(opt)
         local leftLayout = cr("UIListLayout", {Parent = leftSide, Padding = UDim.new(0, 10), SortOrder = Enum.SortOrder.LayoutOrder})
         local rightLayout = cr("UIListLayout", {Parent = rightSide, Padding = UDim.new(0, 10), SortOrder = Enum.SortOrder.LayoutOrder})
         
-        tab.tbtn = tbtn; tab.underline = underline; tab.tpg = tpg; tab.leftSide = leftSide; tab.rightSide = rightSide
+        tab.tbtn = tbtn; tab.grad = grad; tab.selectGrad = selectGrad;
+        tab.tpg = tpg; tab.leftSide = leftSide; tab.rightSide = rightSide
         
         local function selectTab() self:SelectTab(tab) end
         tbtn.MouseButton1Click:Connect(selectTab)
         if UIS.TouchEnabled then tbtn.TouchTap:Connect(selectTab) end
+        
+        for i, tb in ipairs(self.tabs) do
+            tb.tbtn.Size = UDim2.new(1 / (#self.tabs + 1), 0, 1, 0)
+        end
+        
+        table.insert(self.tabs, tab)
+        
+        if not self.curTab then self:SelectTab(tab) end
+        
+        return setmetatable(tab, {__index = self})
+    end
+
+
+
+    function win:SelectTab(t)
+        if self.curTab then
+            self.curTab.tpg.Visible = false
+            self.curTab.selectGrad.Enabled = false
+            tw(self.curTab.tbtn, {TextColor3 = clr.tab_inactive}, 0.2)
+        end
+        
+        self.curTab = t
+        t.tpg.Visible = true
+        t.selectGrad.Enabled = true
+        tw(t.tbtn, {TextColor3 = clr.text}, 0.2)
+    end
         
         function tab:CreateSection(opt)
             local sec = {name = opt.name or "Section", tab = self, side = opt.side or "Left"}
