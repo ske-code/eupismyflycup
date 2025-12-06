@@ -261,14 +261,7 @@ function library.createcolorpicker(default, parent, count, flag, callback, offse
         ZIndex = 101
     })
     
-    local windowInline = cr("Frame", {
-        Parent = windowOutline,
-        Size = UDim2.new(1, -2, 1, -2),
-        Position = UDim2.new(0, 1, 0, 1),
-        BackgroundColor3 = library.theme.SectionOuterBorder,
-        BorderSizePixel = 0,
-        ZIndex = 102
-    })
+
     
     local windowBg = cr("Frame", {
         Parent = windowInline,
@@ -657,6 +650,24 @@ function AsyV2:CreateWindow(opt)
         BackgroundColor3 = library.theme.WindowInlineBackground,
         BorderSizePixel = 0
     })
+
+    local windowInlineTopLine = cr("Frame", {
+        Parent = windowInline,
+        Size = UDim2.new(1, 0, 0, 2),
+        Position = UDim2.new(0, 0, 0, 0),
+        BackgroundColor3 = library.theme.Accent,
+        BorderSizePixel = 0
+    })
+
+    local windowHolder = cr("Frame", {
+        Parent = windowInline,
+        Size = UDim2.new(1, -20, 1, -20),
+        Position = UDim2.new(0, 10, 0, 10),
+        BackgroundColor3 = library.theme.WindowHolderBackground,
+        BorderSizePixel = 0
+    })
+
+    themeobjects[windowInlineTopLine] = "Accent"
     
     local windowHolder = cr("Frame", {
         Parent = windowInline,
@@ -666,7 +677,7 @@ function AsyV2:CreateWindow(opt)
         BorderSizePixel = 0
     })
     
-    -- 在windowHolder顶部添加accent颜色的topline
+    
     local windowTopLine = cr("Frame", {
         Parent = windowHolder,
         Size = UDim2.new(1, 0, 0, 2),
